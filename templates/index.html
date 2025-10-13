@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI-Powered Handwritten Text Recognition</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">AI-Powered Text Recognition</h1>
+    <p class="subtitle">Upload your handwritten notes and get an editable Word document instantly.</p>
+
+    <!-- Drag & Drop Upload Area -->
+    <div id="drop-area" class="drop-area">
+      <p>Drag & drop your image here, or</p>
+      <label for="fileInput" class="btn btn-primary btn-upload">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M3 14a1 1 0 011-1h12a1 1 0 011 1v1H3v-1zm7-9v6m0 0l-3-3m3 3l3-3" clip-rule="evenodd" />
+        </svg>
+        Choose Image
+      </label>
+      <input type="file" id="fileInput" name="file" accept="image/png, image/jpeg" hidden />
+    </div>
+
+    <!-- Preview Section -->
+    <div id="previewContainer" class="preview-container" style="display:none;">
+      <img id="imgPreview" alt="Image Preview" />
+      <button id="clearBtn" class="btn btn-secondary btn-clear" title="Clear Image">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon-clear" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        Clear
+      </button>
+    </div>
+
+    <!-- Action Buttons -->
+    <button id="processBtn" class="btn btn-success" disabled>Upload & Process</button>
+
+    <div id="message" class="message"></div>
+    <div id="downloadLink" class="download-link"></div>
+  </div>
+
+  <footer>
+    <p>© 2025 AI Handwriting OCR.</p>
+  </footer>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const dropArea = document.getElementById('drop-area');
+    const imgPreview = document.getElementById('imgPreview');
+    const previewContainer = document.getElementById('previewContainer');
+    const clearBtn = document.getElementById('clearBtn');
+    const processBtn = document.getElementById('processBtn');
+    const message = document.getElementById('message');
+    const downloadLink = document.getElementById('downloadLink');
+
+    // Helper: show preview and enable process button
+    function showPreview(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imgPreview.src = e.target.result;
+        previewContainer.style.display = 'flex';
+        processBtn.disabled = false;
+        message.textContent = '';
+        downloadLink.innerHTML = '';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Clear preview and reset form
+    function clearPreview() {
+      fileInput.value = '';
+      imgPreview.src = '';
+      previewContainer.style.display = 'none';
+      processBtn.disabled = true;
+      message.textContent = '';
+      downloadLink.innerHTML = '';
+    }
+
+    // File input change
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) {
+        showPreview(fileInput.files[0]);
+      } else {
+        clearPreview();
+      }
+    });
+
+    // Clear button
+    clearBtn.addEventListener('click', clearPreview);
+
+    // Drag & Drop handlers
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropArea.classList.add('highlight');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropArea.classList.remove('highlight');
+      });
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      if (e.dataTransfer.files && e.dataTransfer.files.length) {
+        const file = e.dataTransfer.files[0];
+        if (file.type === "image/png" || file.type === "image/jpeg") {
+          fileInput.files = e.dataTransfer.files;
+          showPreview(file);
+        } else {
+          message.textContent = 'Only PNG or JPEG images are allowed.';
+          message.classList.add('error');
+        }
+      }
+    });
+
+    // Upload & process button
+    processBtn.addEventListener('click', async () => {
+      if (!fileInput.files.length) {
+        message.textContent = 'Please select an image file to upload.';
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      message.textContent = 'Processing... Please wait.';
+      message.classList.remove('error', 'success');
+      downloadLink.innerHTML = '';
+
+      processBtn.disabled = true;
+
+      try {
+        const response = await fetch('/upload/', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          message.textContent = err.error || 'Error processing the image.';
+          message.classList.add('error');
+          processBtn.disabled = false;
+          return;
+        }
+
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+
+        message.textContent = 'Processing complete! Download your document below:';
+        message.classList.add('success');
+        downloadLink.innerHTML = `<a href="${url}" download="recognized_text.docx" class="download-btn">Download Word Document</a>`;
+      } catch (err) {
+        message.textContent = 'An unexpected error occurred.';
+        message.classList.add('error');
+        console.error(err);
+      } finally {
+        processBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
