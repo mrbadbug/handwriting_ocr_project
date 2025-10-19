@@ -1,0 +1,8 @@
+Copyright (c) 2025 [mrbadbug]
+All Rights Reserved.
+
+This software and its associated documentation files (the “Software”) are the intellectual property of [mrbadbug].
+
+Unauthorized copying, modification, distribution, or use of the Software, in whole or in part, is strictly prohibited without explicit written permission from the copyright holder.
+
+The Software is provided “as is,” without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability arising from, out of, or in connection with the Software or its use.
