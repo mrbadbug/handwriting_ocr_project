@@ -1,0 +1,8 @@
+ python-bidi, pyclipper, mpmath, typing-extensions, sympy, sniffio, setuptools, PyYAML, python-multipart, Pillow, packaging, numpy, ninja, networkx, MarkupSafe, lxml, idna, h11, fsspec, filelock, colorama, annotated-types, typing-inspection, tifffile, Shapely, scipy, python-docx, pydantic-core, opencv-python-headless, lazy-loader, jinja2, imageio, click, anyio, uvicorn, torch, starlette, scikit-image, pydantic, torchvision, fastapi, easyocr
+
+cd 
+python -m venv venv
+.\venv\Scripts\activate
+pip install fastapi uvicorn easyocr python-docx python-multipart jinja2
+uvicorn main:app --reload
+pip install opencv-python pyspellchecker
