@@ -1,1 +1,1 @@
-An Online "Sweet Treats Ice-cream Shop" for online order.
+Image to Text Doc Converter.
