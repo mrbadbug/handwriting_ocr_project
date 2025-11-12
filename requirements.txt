@@ -40,10 +40,5 @@ pydantic
 torchvision
 fastapi
 easyocr
-
-cd 
-python -m venv venv
-.\venv\Scriptivates\act
-pip install fastapi uvicorn easyocr python-docx python-multipart jinja2
-uvicorn main:app --reload
-pip install opencv-python pyspellchecker
+python-pyspellchecker
+python-docx
