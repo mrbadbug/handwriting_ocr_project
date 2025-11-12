@@ -15,3 +15,11 @@ You provide image files, the tool reads them, and outputs the extracted text.
    ```bash
    git clone https://github.com/mrbadbug/Img-to-txt-Converter.git
    cd Img-to-txt-Converter
+
+   cd to run-
+python -m venv venv
+.\venv\Scriptivates\act
+uvicorn main:app --reload
+
+Accuracy-
+GoogleAPI can be added to get more accuracy.
